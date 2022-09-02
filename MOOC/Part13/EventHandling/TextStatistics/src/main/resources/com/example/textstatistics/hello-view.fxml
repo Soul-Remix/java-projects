@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.textstatistics.HelloController">
+    <TextArea fx:id="textArea" onKeyReleased="#onTextAreaChanged"/>
+    <HBox spacing="20">
+        <HBox>
+            <Label text="Letters: "/>
+            <Label text="0" fx:id="lettersCount"/>
+        </HBox>
+        <HBox>
+            <Label text="Words: "/>
+            <Label text="0" fx:id="wordsCount"/>
+        </HBox>
+        <HBox>
+            <Label text="Longest word:: "/>
+            <Label fx:id="longestWord"/>
+        </HBox>
+    </HBox>
+</VBox>
