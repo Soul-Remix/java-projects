@@ -90,10 +90,10 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        return new comp();
+        return new Comp();
     }
 
-    private class comp implements Comparator<Point> {
+    private class Comp implements Comparator<Point> {
 
         public int compare(Point p1, Point p2) {
             double cmp = p1.slopeTo(Point.this) - p2.slopeTo(Point.this);
