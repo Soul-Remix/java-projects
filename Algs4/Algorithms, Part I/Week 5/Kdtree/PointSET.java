@@ -23,11 +23,17 @@ public class PointSET {
 
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
         set.add(p);
     }
 
     // does the set contain point p?
     public boolean contains(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
         return set.contains(p);
     }
 
@@ -40,6 +46,9 @@ public class PointSET {
 
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
+        if (rect == null) {
+            throw new IllegalArgumentException();
+        }
         Point2D point2D = new Point2D(rect.xmin(), rect.ymin());
         Point2D point2DMax = new Point2D(rect.xmax(), rect.ymax());
         return set.subSet(point2D, true, point2DMax, true);
@@ -47,6 +56,9 @@ public class PointSET {
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
         if (isEmpty()) {
             return null;
         }
@@ -77,7 +89,7 @@ public class PointSET {
         Point2D point4 = new Point2D(10, 12);
         pointset.insert(point4);
         System.out.println(pointset.size());
-        
+
         System.out.println(pointset.nearest(new Point2D(3, 9)));
 
         RectHV rectHV = new RectHV(4, 4, 6, 9);
