@@ -87,7 +87,42 @@ public class KdTree {
         return node;
     }
 
+    // does the set contain point p?
+    public boolean contains(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
+        int depth = 0;
+        Node x = root;
+        while (x != null) {
+            if (depth % 2 == 0) {
+                if (x.value.x() > p.x()) {
+                    x = x.right;
+                }
+                else if (x.value.x() < p.x()) {
+                    x = x.left;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                if (x.value.y() > p.y()) {
+                    x = x.right;
+                }
+                else if (x.value.y() < p.y()) {
+                    x = x.left;
+                }
+                else {
+                    return true;
+                }
+            }
+            depth++;
+        }
+        return false;
+    }
 
+    
     public static void main(String[] args) {
         KdTree tree = new KdTree();
         Point2D point1 = new Point2D(4, 7);
@@ -99,5 +134,10 @@ public class KdTree {
 
 
         System.out.println(tree.root.value);
+
+        System.out.println(tree.contains(point2));
+        System.out.println(tree.contains(point1));
+        System.out.println(tree.contains(point3));
+        System.out.println(tree.contains(new Point2D(3, 6)));
     }
 }
