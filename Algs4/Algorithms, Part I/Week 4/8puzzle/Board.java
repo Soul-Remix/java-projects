@@ -3,7 +3,6 @@ import java.util.Arrays;
 
 public class Board {
     private int[][] tiles;
-
     private int size;
 
     // create a board from an n-by-n array of tiles,
@@ -107,32 +106,33 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
+        // make a copy of the tiles
         int[][] tilesCopy = copyBoard(this.tiles);
 
-        boolean done = false;
+        // label the loop
+        outerLoop:
         for (int i = 0; i < tilesCopy.length; i++) {
             for (int j = 0; j < tilesCopy.length - 1; j++) {
                 if (tilesCopy[i][j] != 0 && tilesCopy[i][j + 1] != 0) {
+                    // Do the exchange and break the loop
                     int temp = tilesCopy[i][j + 1];
                     tilesCopy[i][j + 1] = tilesCopy[i][j];
                     tilesCopy[i][j] = temp;
-                    done = true;
-                    break;
+                    break outerLoop;
                 }
-            }
-            if (done) {
-                break;
             }
         }
 
         return new Board(tilesCopy);
     }
 
+    // Create the goal board (A board where all numbers are in place and end with an empty tile)
     private int[][] createGoalBoard(int n) {
         int num = 1;
         int[][] board = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
+                // Check if we reached the end and insert a zero instead of the num
                 if (num == size * size) {
                     board[i][j] = 0;
                 }
@@ -145,6 +145,7 @@ public class Board {
         return board;
     }
 
+    // Return the position of the cell containing the number.
     private Cell findGoalCell(int[][] board, int num) {
         Cell cell = null;
         for (int i = 0; i < board.length; i++) {
@@ -158,6 +159,7 @@ public class Board {
         return cell;
     }
 
+    // Make a copy of the tiles, so we don't mutate the original tiles.
     private int[][] copyBoard(int[][] board) {
         int[][] boardCopy = new int[board.length][board.length];
         for (int i = 0; i < board.length; i++) {
@@ -168,6 +170,8 @@ public class Board {
         return boardCopy;
     }
 
+    // Make a copy of the tiles using copyBoard method.
+    // exchange the tiles specified and return a new board with the exchanged tiles
     private Board exchangeCells(int[][] board, int startX, int endX, int startY, int endY) {
         int[][] tilesCopy = copyBoard(board);
         int temp = tilesCopy[endX][endY];
