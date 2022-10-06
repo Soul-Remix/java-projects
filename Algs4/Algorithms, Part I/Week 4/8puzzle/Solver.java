@@ -13,17 +13,17 @@ public class Solver {
         private SearchNode previousNode;
         private int cachedPriority = -1;
 
+        public SearchNode(Board board, int moves, SearchNode previousNode) {
+            this.board = board;
+            this.moves = moves;
+            this.previousNode = previousNode;
+        }
+
         private int priority() {
             if (cachedPriority == -1) {
                 cachedPriority = moves + board.manhattan();
             }
             return cachedPriority;
-        }
-
-        public SearchNode(Board board, int moves, SearchNode previousNode) {
-            this.board = board;
-            this.moves = moves;
-            this.previousNode = previousNode;
         }
 
         public int compareTo(SearchNode that) {
