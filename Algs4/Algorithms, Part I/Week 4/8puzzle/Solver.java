@@ -19,6 +19,7 @@ public class Solver {
             this.previousNode = previousNode;
         }
 
+        // Return the cached priority value if not -1 or calculate it using the number of moves plus the manhattan value
         private int priority() {
             if (cachedPriority == -1) {
                 cachedPriority = moves + board.manhattan();
@@ -43,24 +44,30 @@ public class Solver {
             throw new IllegalArgumentException();
         }
 
+        // Create tow min priority queue for the board and the twin board
         MinPQ<SearchNode> minPQ = new MinPQ<>();
         MinPQ<SearchNode> minPQTwin = new MinPQ<>();
+
         solution = new ArrayList<>();
 
+        // Insert the initial board to the min priority queue
         minPQ.insert(new SearchNode(initial, 0, null));
         minPQTwin.insert(new SearchNode(initial.twin(), 0, null));
 
         while (true) {
+            // Delete the minimum search node in the priority queue
             SearchNode node = minPQ.delMin();
             SearchNode nodeTwin = minPQTwin.delMin();
 
             Board board = node.board;
             Board boardTwin = nodeTwin.board;
 
+            // Check if we reached the goal in the twin board and flag the board as unsolvable
             if (boardTwin.isGoal()) {
                 isSolvable = false;
                 break;
             }
+            // Check if we reached the goal in the main board push the boards to the solution list
             if (board.isGoal()) {
                 isSolvable = true;
                 solution.add(board);
@@ -71,10 +78,12 @@ public class Solver {
                 break;
             }
 
+            // Increment the moves value
             node.moves++;
             nodeTwin.moves++;
 
             for (Board neighbor : node.board.neighbors()) {
+                // Don’t enqueue a neighbor if its board is the same as the board of the previous search node in the game tree
                 if ((node.previousNode != null && neighbor.equals(node.previousNode.board))) {
                     continue;
                 }
@@ -82,6 +91,7 @@ public class Solver {
             }
 
             for (Board neighbor : nodeTwin.board.neighbors()) {
+                // Don’t enqueue a neighbor if its board is the same as the board of the previous search node in the game tree
                 if ((nodeTwin.previousNode != null && neighbor.equals(
                         nodeTwin.previousNode.board))) {
                     continue;
@@ -89,6 +99,8 @@ public class Solver {
                 minPQTwin.insert(new SearchNode(neighbor, nodeTwin.moves, nodeTwin));
             }
         }
+        // Reverse the solution list to start in the correct order
+        Collections.reverse(solution);
     }
 
     // is the initial board solvable? (see below)
@@ -109,7 +121,6 @@ public class Solver {
         if (!isSolvable()) {
             return null;
         }
-        Collections.reverse(solution);
         return solution;
     }
 
