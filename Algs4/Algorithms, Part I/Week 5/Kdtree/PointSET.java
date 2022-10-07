@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class PointSET {
@@ -49,9 +50,13 @@ public class PointSET {
         if (rect == null) {
             throw new IllegalArgumentException();
         }
-        Point2D point2D = new Point2D(rect.xmin(), rect.ymin());
-        Point2D point2DMax = new Point2D(rect.xmax(), rect.ymax());
-        return set.subSet(point2D, true, point2DMax, true);
+        ArrayList<Point2D> list = new ArrayList<>();
+        for (Point2D p : set) {
+            if (rect.contains(p)) {
+                list.add(p);
+            }
+        }
+        return list;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
@@ -63,15 +68,15 @@ public class PointSET {
             return null;
         }
         double distance = Double.MAX_VALUE;
-        Point2D nearst = null;
+        Point2D nearest = null;
         for (Point2D point : set) {
             double dis = p.distanceTo(point);
             if (dis < distance) {
                 distance = dis;
-                nearst = point;
+                nearest = point;
             }
         }
-        return nearst;
+        return nearest;
     }
 
     // unit testing of the methods
