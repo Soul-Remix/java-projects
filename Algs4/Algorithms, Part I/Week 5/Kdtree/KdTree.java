@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
     private Node root;
@@ -120,6 +121,36 @@ public class KdTree {
         return false;
     }
 
+    // draw all points to standard draw
+    public void draw() {
+        draw(root, 0);
+    }
+
+    private void draw(Node node, int depth) {
+        if (node == null) {
+            return;
+        }
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius(0.02);
+        node.value.draw();
+        double sx = node.rect.xmin();
+        double ex = node.rect.xmax();
+        double sy = node.rect.ymin();
+        double ey = node.rect.ymax();
+        StdDraw.setPenRadius(0.01);
+        if (depth % 2 == 0) {
+            StdDraw.setPenColor(StdDraw.RED);
+            sx = ex = node.value.x();
+        }
+        else {
+            StdDraw.setPenColor(StdDraw.BLUE);
+            sy = ey = node.value.y();
+
+        }
+        StdDraw.line(sx, sy, ex, ey);
+        draw(node.left, depth + 1);
+        draw(node.right, depth + 1);
+    }
 
     public static void main(String[] args) {
         KdTree kd = new KdTree();
@@ -135,5 +166,6 @@ public class KdTree {
         kd.insert(p4);
         kd.insert(p5);
 
+        kd.draw();
     }
 }
