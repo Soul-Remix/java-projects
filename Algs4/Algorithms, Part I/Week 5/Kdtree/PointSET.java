@@ -67,7 +67,7 @@ public class PointSET {
         if (isEmpty()) {
             return null;
         }
-        double distance = Double.MAX_VALUE;
+        double distance = Double.POSITIVE_INFINITY;
         Point2D nearest = null;
         for (Point2D point : set) {
             double dis = p.distanceTo(point);

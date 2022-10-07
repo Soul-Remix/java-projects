@@ -4,12 +4,12 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
     private Node root;
-    private int size;
 
     private class Node {
         private Point2D value;
         private RectHV rect;
         private Node left, right;
+        private int size;
 
         public Node(Point2D value) {
             this.value = value;
@@ -24,7 +24,7 @@ public class KdTree {
 
     // number of points in the set
     public int size() {
-        return size;
+        return nodeSize(root);
     }
 
     // add the point to the set (if it is not already in the set)
@@ -35,24 +35,24 @@ public class KdTree {
         if (root == null) {
             root = new Node(p);
             root.rect = new RectHV(0, 0, 1, 1);
-            size++;
+            root.size++;
             return;
         }
         root = insert(root, p, 0);
-        size++;
     }
 
     private Node insert(Node node, Point2D p, int depth) {
         if (node == null) {
-            return new Node(p);
+            Node newNode = new Node(p);
+            newNode.size = 1;
+            return newNode;
         }
         if (depth % 2 == 0) {
-
             if (p.x() < node.value.x()) {
                 node.left = insert(node.left, p, depth + 1);
                 if (node.left.rect == null) {
-                    node.left.rect = new RectHV(node.rect.xmin(), node.rect.ymin(),
-                                                node.value.x(), node.rect.ymax());
+                    node.left.rect = new RectHV(node.rect.xmin(), node.rect.ymin(), node.value.x(),
+                                                node.rect.ymax());
                 }
             }
             else {
@@ -83,42 +83,48 @@ public class KdTree {
                 }
             }
         }
+        node.size = 1 + nodeSize(node.left) + nodeSize(node.right);
         return node;
+    }
+
+    private int nodeSize(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.size;
     }
 
     // does the set contain point p?
     public boolean contains(Point2D p) {
-        if (p == null) {
-            throw new IllegalArgumentException();
+        return contains(p, root, 0);
+    }
+
+    private boolean contains(Point2D pointToSearch, Node node, int depth) {
+        if (node == null) {
+            return false;
         }
-        int depth = 0;
-        Node x = root;
-        while (x != null) {
-            if (depth % 2 == 0) {
-                if (x.value.x() > p.x()) {
-                    x = x.right;
-                }
-                else if (x.value.x() < p.x()) {
-                    x = x.left;
-                }
-                else {
-                    return true;
-                }
+        if (depth % 2 == 0) {
+            if (pointToSearch.x() < node.value.x()) {
+                return contains(pointToSearch, node.left, depth + 1);
             }
             else {
-                if (x.value.y() > p.y()) {
-                    x = x.right;
-                }
-                else if (x.value.y() < p.y()) {
-                    x = x.left;
-                }
-                else {
+                if (node.value.equals(pointToSearch)) {
                     return true;
                 }
+                return contains(pointToSearch, node.right, depth + 1);
             }
-            depth++;
         }
-        return false;
+        else {
+            if (pointToSearch.y() < node.value.y()) {
+                return contains(pointToSearch, node.left, depth + 1);
+            }
+            else {
+                if (node.value.equals(pointToSearch)) {
+                    return true;
+                }
+                return contains(pointToSearch, node.right, depth + 1);
+            }
+        }
     }
 
     // draw all points to standard draw
@@ -140,11 +146,13 @@ public class KdTree {
         StdDraw.setPenRadius(0.01);
         if (depth % 2 == 0) {
             StdDraw.setPenColor(StdDraw.RED);
-            sx = ex = node.value.x();
+            sx = node.value.x();
+            ex = node.value.x();
         }
         else {
             StdDraw.setPenColor(StdDraw.BLUE);
-            sy = ey = node.value.y();
+            sy = node.value.y();
+            ey = node.value.y();
 
         }
         StdDraw.line(sx, sy, ex, ey);
@@ -166,6 +174,7 @@ public class KdTree {
         kd.insert(p4);
         kd.insert(p5);
 
-        kd.draw();
+        System.out.println(kd.contains(p5));
+        System.out.println(kd.size());
     }
 }
