@@ -45,16 +45,27 @@ public class KdTree {
         if (node == null) {
             return new Node(p);
         }
-
         if (depth % 2 == 0) {
-            if (node.value.x() > p.x()) {
-                node.right = insert(node.right, p, depth + 1);
-                if (node.right.rect == null) {
-                    node.right.rect = new RectHV(node.rect.xmin(), node.value.y(), node.rect.xmax(),
-                                                 node.rect.ymax());
+
+            if (p.x() < node.value.x()) {
+                node.left = insert(node.left, p, depth + 1);
+                if (node.left.rect == null) {
+                    node.left.rect = new RectHV(node.rect.xmin(), node.rect.ymin(),
+                                                node.value.x(), node.rect.ymax());
                 }
             }
-            else if (node.value.x() < p.x()) {
+            else {
+                if (!node.value.equals(p)) {
+                    node.right = insert(node.right, p, depth + 1);
+                    if (node.right.rect == null) {
+                        node.right.rect = new RectHV(node.value.x(), node.rect.ymin(),
+                                                     node.rect.xmax(), node.rect.ymax());
+                    }
+                }
+            }
+        }
+        else {
+            if (p.y() < node.value.y()) {
                 node.left = insert(node.left, p, depth + 1);
                 if (node.left.rect == null) {
                     node.left.rect = new RectHV(node.rect.xmin(), node.rect.ymin(),
@@ -62,26 +73,13 @@ public class KdTree {
                 }
             }
             else {
-                node.value = p;
-            }
-        }
-        else {
-            if (node.value.y() > p.y()) {
-                node.right = insert(node.right, p, depth + 1);
-                if (node.right.rect == null) {
-                    node.right.rect = new RectHV(node.value.x(), node.rect.ymin(), node.rect.xmax(),
-                                                 node.rect.ymax());
+                if (!node.value.equals(p)) {
+                    node.right = insert(node.right, p, depth + 1);
+                    if (node.right.rect == null) {
+                        node.right.rect = new RectHV(node.rect.xmin(), node.value.y(),
+                                                     node.rect.xmax(), node.rect.ymax());
+                    }
                 }
-            }
-            else if (node.value.y() < p.y()) {
-                node.left = insert(node.left, p, depth + 1);
-                if (node.left.rect == null) {
-                    node.left.rect = new RectHV(node.rect.xmin(), node.rect.ymin(), node.value.x(),
-                                                node.rect.ymax());
-                }
-            }
-            else {
-                node.value = p;
             }
         }
         return node;
@@ -122,22 +120,20 @@ public class KdTree {
         return false;
     }
 
-    
+
     public static void main(String[] args) {
-        KdTree tree = new KdTree();
-        Point2D point1 = new Point2D(4, 7);
-        Point2D point2 = new Point2D(10, 12);
-        Point2D point3 = new Point2D(5, 8);
-        tree.insert(point1);
-        tree.insert(point2);
-        tree.insert(point3);
+        KdTree kd = new KdTree();
+        Point2D p1 = new Point2D(0.7, 0.2);
+        Point2D p2 = new Point2D(0.5, 0.4);
+        Point2D p3 = new Point2D(0.2, 0.3);
+        Point2D p4 = new Point2D(0.4, 0.7);
+        Point2D p5 = new Point2D(0.9, 0.6);
 
+        kd.insert(p1);
+        kd.insert(p2);
+        kd.insert(p3);
+        kd.insert(p4);
+        kd.insert(p5);
 
-        System.out.println(tree.root.value);
-
-        System.out.println(tree.contains(point2));
-        System.out.println(tree.contains(point1));
-        System.out.println(tree.contains(point3));
-        System.out.println(tree.contains(new Point2D(3, 6)));
     }
 }
