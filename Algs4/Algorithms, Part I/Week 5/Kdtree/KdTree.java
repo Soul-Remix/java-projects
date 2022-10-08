@@ -2,6 +2,8 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
+import java.util.ArrayList;
+
 public class KdTree {
     private Node root;
 
@@ -99,30 +101,30 @@ public class KdTree {
         return contains(p, root, 0);
     }
 
-    private boolean contains(Point2D pointToSearch, Node node, int depth) {
+    private boolean contains(Point2D p, Node node, int depth) {
         if (node == null) {
             return false;
         }
         if (depth % 2 == 0) {
-            if (pointToSearch.x() < node.value.x()) {
-                return contains(pointToSearch, node.left, depth + 1);
+            if (p.x() < node.value.x()) {
+                return contains(p, node.left, depth + 1);
             }
             else {
-                if (node.value.equals(pointToSearch)) {
+                if (node.value.equals(p)) {
                     return true;
                 }
-                return contains(pointToSearch, node.right, depth + 1);
+                return contains(p, node.right, depth + 1);
             }
         }
         else {
-            if (pointToSearch.y() < node.value.y()) {
-                return contains(pointToSearch, node.left, depth + 1);
+            if (p.y() < node.value.y()) {
+                return contains(p, node.left, depth + 1);
             }
             else {
-                if (node.value.equals(pointToSearch)) {
+                if (node.value.equals(p)) {
                     return true;
                 }
-                return contains(pointToSearch, node.right, depth + 1);
+                return contains(p, node.right, depth + 1);
             }
         }
     }
@@ -160,6 +162,30 @@ public class KdTree {
         draw(node.right, depth + 1);
     }
 
+    // all points that are inside the rectangle (or on the boundary)
+    public Iterable<Point2D> range(RectHV rect) {
+        if (rect == null) {
+            throw new IllegalArgumentException();
+        }
+        ArrayList<Point2D> points = new ArrayList<>();
+
+        range(rect, root, points);
+        return points;
+    }
+
+    private void range(RectHV rect, Node node, ArrayList<Point2D> points) {
+        if (node == null) {
+            return;
+        }
+        if (rect.intersects(node.rect)) {
+            if (rect.contains(node.value)) {
+                points.add(node.value);
+            }
+            range(rect, node.left, points);
+            range(rect, node.right, points);
+        }
+    }
+
     public static void main(String[] args) {
         KdTree kd = new KdTree();
         Point2D p1 = new Point2D(0.7, 0.2);
@@ -174,7 +200,11 @@ public class KdTree {
         kd.insert(p4);
         kd.insert(p5);
 
+        kd.draw();
+
         System.out.println(kd.contains(p5));
         System.out.println(kd.size());
+
+        System.out.println(kd.range(new RectHV(0.3, 0.4, 0.5, 0.5)));
     }
 }
