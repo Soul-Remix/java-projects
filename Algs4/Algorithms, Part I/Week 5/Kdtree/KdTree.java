@@ -98,6 +98,9 @@ public class KdTree {
 
     // does the set contain point p?
     public boolean contains(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
         return contains(p, root, 0);
     }
 
@@ -139,13 +142,11 @@ public class KdTree {
             return;
         }
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.setPenRadius(0.02);
         node.value.draw();
         double sx = node.rect.xmin();
         double ex = node.rect.xmax();
         double sy = node.rect.ymin();
         double ey = node.rect.ymax();
-        StdDraw.setPenRadius(0.01);
         if (depth % 2 == 0) {
             StdDraw.setPenColor(StdDraw.RED);
             sx = node.value.x();
@@ -168,7 +169,6 @@ public class KdTree {
             throw new IllegalArgumentException();
         }
         ArrayList<Point2D> points = new ArrayList<>();
-
         range(rect, root, points);
         return points;
     }
@@ -184,6 +184,61 @@ public class KdTree {
             range(rect, node.left, points);
             range(rect, node.right, points);
         }
+    }
+
+    // a nearest neighbor in the set to point p; null if the set is empty
+    public Point2D nearest(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException();
+        }
+        if (isEmpty()) {
+            return null;
+        }
+        double best = root.value.distanceSquaredTo(p);
+        return nearest(root, p, root.value, best, 0);
+    }
+
+    private Point2D nearest(Node node, Point2D p, Point2D champ, double best, int depth) {
+        if (node == null || best < node.rect.distanceSquaredTo(p)) return champ;
+        best = champ.distanceSquaredTo(p);
+        double temp = node.value.distanceSquaredTo(p);
+        if (temp < best) {
+            best = temp;
+            champ = node.value;
+        }
+
+        if (depth % 2 == 0) {
+            if (node.value.x() < p.x()) {
+                champ = nearest(node.right, p, champ, best, depth + 1);
+                if (node.left != null
+                        && node.left.rect.distanceSquaredTo(p) < champ.distanceSquaredTo(p))
+                    champ = nearest(node.left, p, champ, best, depth + 1);
+            }
+            else {
+                champ = nearest(node.left, p, champ, best, depth + 1);
+                if (node.right != null
+                        && node.right.rect.distanceSquaredTo(p) < champ.distanceSquaredTo(p))
+                    champ = nearest(node.right, p, champ, best, depth + 1);
+            }
+        }
+        else {
+            if (node.value.y() < p.y()) {
+                champ = nearest(node.right, p, champ, best, depth + 1);
+                if (node.left != null
+                        && node.left.rect.distanceSquaredTo(p) < champ.distanceSquaredTo(p)) {
+                    champ = nearest(node.left, p, champ, best, depth + 1);
+                }
+
+            }
+            else {
+                champ = nearest(node.left, p, champ, best, depth + 1);
+                if (node.right != null
+                        && node.right.rect.distanceSquaredTo(p) < champ.distanceSquaredTo(p))
+                    champ = nearest(node.right, p, champ, best, depth + 1);
+
+            }
+        }
+        return champ;
     }
 
     public static void main(String[] args) {
