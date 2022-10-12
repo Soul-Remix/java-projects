@@ -2,7 +2,6 @@ import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 
 public class SAP {
-
     private Digraph digraph;
 
     // constructor takes a digraph (not necessarily a DAG)
