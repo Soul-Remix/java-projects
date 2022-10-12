@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class WordNet {
     private final HashMap<String, Bag<Integer>> wordsMap;
-    private final HashMap<Integer, Bag<String>> idsMap;
+    private final HashMap<Integer, String> idsMap;
     private final SAP sap;
 
     // constructor takes the name of the two input files
@@ -25,9 +25,7 @@ public class WordNet {
             String[] lineSplit = line.split(",");
             int id = Integer.parseInt(lineSplit[0]);
             String[] nouns = lineSplit[1].split(" ");
-            Bag<String> words = new Bag<>();
             for (int i = 0; i < nouns.length; i++) {
-                words.add(nouns[i]);
                 Bag<Integer> ids = new Bag<>();
                 if (wordsMap.containsKey(nouns[i])) {
                     ids = wordsMap.get(nouns[i]);
@@ -35,7 +33,7 @@ public class WordNet {
                 ids.add(id);
                 wordsMap.put(nouns[i], ids);
             }
-            idsMap.put(id, words);
+            idsMap.put(id, lineSplit[1]);
             count++;
         }
 
@@ -90,7 +88,7 @@ public class WordNet {
         if (ancestor == -1) {
             return "None";
         }
-        return idsMap.get(ancestor).toString();
+        return idsMap.get(ancestor);
     }
 
 
