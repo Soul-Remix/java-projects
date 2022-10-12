@@ -5,10 +5,9 @@ import edu.princeton.cs.algs4.In;
 import java.util.HashMap;
 
 public class WordNet {
-    private HashMap<String, Bag<Integer>> wordsMap;
-    private HashMap<Integer, Bag<String>> idsMap;
-    private Digraph digraph;
-    private SAP sap;
+    private final HashMap<String, Bag<Integer>> wordsMap;
+    private final HashMap<Integer, Bag<String>> idsMap;
+    private final SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
@@ -40,7 +39,7 @@ public class WordNet {
             count++;
         }
 
-        digraph = new Digraph(count);
+        Digraph digraph = new Digraph(count);
 
         In hyperIn = new In(hypernyms);
         while (!hyperIn.isEmpty()) {
@@ -97,6 +96,5 @@ public class WordNet {
 
     // do unit testing of this class
     public static void main(String[] args) {
-        WordNet wordNet = new WordNet(args[0], args[1]);
     }
 }

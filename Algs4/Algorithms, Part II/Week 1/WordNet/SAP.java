@@ -1,12 +1,19 @@
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
 public class SAP {
-    private Digraph digraph;
+    private final Digraph digraph;
 
     // constructor takes a digraph (not necessarily a DAG)
     public SAP(Digraph G) {
-        digraph = G;
+        if (G == null) {
+            throw new IllegalArgumentException();
+        }
+
+        digraph = new Digraph(G);
     }
 
     // length of shortest ancestral path between v and w; -1 if no such path
@@ -50,12 +57,11 @@ public class SAP {
     }
 
     private enum Shortest {
-        length,
-        ancestor
+        length, ancestor
     }
 
-    private void validateInput(int num) {
-        if (num < 0 || num > digraph.V() - 1) {
+    private void validateInput(Integer num) {
+        if (num == null || num < 0 || num > digraph.V() - 1) {
             throw new IllegalArgumentException();
         }
     }
@@ -64,7 +70,7 @@ public class SAP {
         if (nums == null) {
             throw new IllegalArgumentException();
         }
-        for (int num : nums) {
+        for (Integer num : nums) {
             validateInput(num);
         }
     }
@@ -95,5 +101,15 @@ public class SAP {
 
     // do unit testing of this class
     public static void main(String[] args) {
+        In in = new In(args[0]);
+        Digraph G = new Digraph(in);
+        SAP sap = new SAP(G);
+        while (!StdIn.isEmpty()) {
+            int v = StdIn.readInt();
+            int w = StdIn.readInt();
+            int length = sap.length(v, w);
+            int ancestor = sap.ancestor(v, w);
+            StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
+        }
     }
 }
