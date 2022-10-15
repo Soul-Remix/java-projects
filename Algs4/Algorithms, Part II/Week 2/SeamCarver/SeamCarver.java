@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Picture;
 
+import java.awt.Color;
+
 public class SeamCarver {
     private Picture picture;
     private int width;
@@ -33,6 +35,29 @@ public class SeamCarver {
     // height of current picture
     public int height() {
         return height;
+    }
+
+    // energy of pixel at column x and row y
+    public double energy(int x, int y) {
+        validateWidth(x);
+        validateHeight(y);
+        if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1) {
+            return 1000;
+        }
+
+        Color color1, color2;
+
+        color1 = new Color(pixels[y - 1][x]);
+        color2 = new Color(pixels[y + 1][x]);
+        double squareY = Math.pow(color1.getRed() - color2.getRed(), 2) + Math.pow(
+                color1.getGreen() - color2.getGreen(), 2) + Math.pow(
+                color1.getBlue() - color2.getBlue(), 2);
+        color1 = new Color(pixels[y][x - 1]);
+        color2 = new Color(pixels[y][x + 1]);
+        double squareX = Math.pow(color1.getRed() - color2.getRed(), 2) + Math.pow(
+                color1.getGreen() - color2.getGreen(), 2) + Math.pow(
+                color1.getBlue() - color2.getBlue(), 2);
+        return Math.sqrt(squareX + squareY);
     }
 
     // remove horizontal seam from current picture
@@ -85,6 +110,8 @@ public class SeamCarver {
     public static void main(String[] args) {
         Picture picture = new Picture(args[0]);
         SeamCarver carver = new SeamCarver(picture);
+
+        System.out.println(carver.energy(0, 3));
     }
 
 }
