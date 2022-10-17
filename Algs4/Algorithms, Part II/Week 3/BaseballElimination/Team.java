@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Team {
@@ -8,6 +9,8 @@ public class Team {
     private final int losses;
     private final int remaning;
     private final int[] against;
+    private boolean isEliminated = false;
+    private ArrayList<String> certificateOfElimination = new ArrayList<>();
 
 
     public Team(int id, String teamName, int wins, int losses, int remaning, int[] against) {
@@ -41,6 +44,22 @@ public class Team {
 
     public int[] getAgainst() {
         return against;
+    }
+
+    public boolean isEliminated() {
+        return isEliminated;
+    }
+
+    public void setIsEliminated(boolean eliminated) {
+        isEliminated = eliminated;
+    }
+
+    public ArrayList<String> getCertificateOfElimination() {
+        return certificateOfElimination;
+    }
+
+    public void setCertificateOfElimination(ArrayList<String> certificateOfElimination) {
+        this.certificateOfElimination = certificateOfElimination;
     }
 
     public String toString() {

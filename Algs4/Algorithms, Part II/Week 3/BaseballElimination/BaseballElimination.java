@@ -1,49 +1,111 @@
 import edu.princeton.cs.algs4.In;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class BaseballElimination {
-    private int numOfTeams;
-    private HashMap<String, Team> teamsMap;
-    private String[] teams;
+    private final int numOfTeams;
+    private final HashMap<String, Team> teamsMap;
+    private final String[] teams;
 
     // create a baseball division from given filename in format specified below
     public BaseballElimination(String filename) {
         In input = new In(filename);
-        numOfTeams = Integer.parseInt(input.readLine());
+        numOfTeams = input.readInt();
         teamsMap = new HashMap<>();
         teams = new String[numOfTeams];
-        int id = 0;
-        while (!input.isEmpty()) {
-            String[] line = input.readLine().split(" ");
-            String teamName = line[0];
-            teams[id] = teamName;
-            int space = 1;
-            for (int i = 1; i < line.length; i++) {
-                if (!line[i].equals("")) {
-                    break;
-                }
-                space++;
-            }
-            int wins = Integer.parseInt(line[space++]);
-            int losses = Integer.parseInt(line[space++]);
-            int remaning = Integer.parseInt(line[space++]);
 
+        for (int i = 0; i < numOfTeams; i++) {
+            String teamName = input.readString();
+            int wins = input.readInt();
+            int losses = input.readInt();
+            int remaning = input.readInt();
             int[] against = new int[numOfTeams];
-            int againstId = 0;
-            for (int i = space + 2; i < line.length; i++) {
-                against[againstId] = Integer.parseInt(line[i]);
-                againstId++;
+
+            for (int j = 0; j < numOfTeams; j++) {
+                against[j] = input.readInt();
             }
-
-            Team team = new Team(id, teamName, wins, losses, remaning, against);
+            Team team = new Team(i, teamName, wins, losses, remaning, against);
             teamsMap.put(teamName, team);
-
-            id++;
+            teams[i] = teamName;
         }
     }
 
+    // number of teams
+    public int numberOfTeams() {
+        return numOfTeams;
+    }
+
+    // all teams
+    public Iterable<String> teams() {
+        return teamsMap.keySet();
+    }
+
+    // number of wins for given team
+    public int wins(String team) {
+        if (!teamsMap.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+        return teamsMap.get(team).getWins();
+    }
+
+    // number of losses for given team
+    public int losses(String team) {
+        if (!teamsMap.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+        return teamsMap.get(team).getLosses();
+    }
+
+    // number of remaining games for given team
+    public int remaining(String team) {
+        if (!teamsMap.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+        return teamsMap.get(team).getRemaning();
+    }
+
+    // number of remaining games between team1 and team2
+    public int against(String team1, String team2) {
+        if (!teamsMap.containsKey(team1) || !teamsMap.containsKey(team2)) {
+            throw new IllegalArgumentException();
+        }
+        int id2 = teamsMap.get(team2).getId();
+
+        return teamsMap.get(team1).getAgainst()[id2];
+    }
+
+    // is given team eliminated?
+    public boolean isEliminated(String team) {
+        if (!teamsMap.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+        return teamsMap.get(team).isEliminated();
+    }
+
+    // subset R of teams that eliminates given team; null if not eliminated
+    public Iterable<String> certificateOfElimination(String team) {
+        if (!teamsMap.containsKey(team)) {
+            throw new IllegalArgumentException();
+        }
+        if (!isEliminated(team)) {
+            return null;
+        }
+        return teamsMap.get(team).getCertificateOfElimination();
+    }
+
+
     public static void main(String[] args) {
-        BaseballElimination baseballElimination = new BaseballElimination(args[0]);
+        BaseballElimination baseball = new BaseballElimination(args[0]);
+
+
+        System.out.println(baseball.numberOfTeams());
+        String[] baseballTeams = baseball.teams;
+        System.out.println(Arrays.toString(baseballTeams));
+        System.out.println(baseball.wins(baseballTeams[0]));
+        System.out.println(baseball.losses(baseballTeams[0]));
+        System.out.println(baseball.remaining(baseballTeams[0]));
+        System.out.println(baseball.against(baseballTeams[0], baseballTeams[1]));
+        System.out.println(baseball.isEliminated(baseballTeams[0]));
     }
 }
