@@ -1,5 +1,9 @@
+import edu.princeton.cs.algs4.FlowEdge;
+import edu.princeton.cs.algs4.FlowNetwork;
+import edu.princeton.cs.algs4.FordFulkerson;
 import edu.princeton.cs.algs4.In;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -29,6 +33,43 @@ public class BaseballElimination {
             teamsMap.put(teamName, team);
             teams[i] = teamName;
         }
+
+        int vertices = (numOfTeams) * (numOfTeams + 1) / 2 + 2;
+        int start = vertices - 1;
+        int end = vertices - 2;
+
+        for (int i = 0; i < numOfTeams; i++) {
+            Team team = teamsMap.get(teams[i]);
+            int celling = team.getWins() + team.getRemaning();
+            FlowNetwork network = new FlowNetwork(vertices);
+
+            for (int j = 0; j < numOfTeams; j++) {
+                if (j != i) {
+                    Team other = teamsMap.get(teams[j]);
+                    network.addEdge(new FlowEdge(j, start, Math.max(celling - other.getWins(), 0)));
+                    for (int k = j; k < numOfTeams; k++) {
+                        if (k != i) {
+                            int gameIndex = (2 * numOfTeams - j) * (j + 1) / 2 + k - j - 1;
+                            network.addEdge(new FlowEdge(end, gameIndex, other.getAgainst()[k]));
+                            network.addEdge(new FlowEdge(gameIndex, j, Double.POSITIVE_INFINITY));
+                            network.addEdge(new FlowEdge(gameIndex, k, Double.POSITIVE_INFINITY));
+                        }
+                    }
+                }
+            }
+
+            ArrayList<String> list = new ArrayList<>();
+            FordFulkerson fordFulkerson = new FordFulkerson(network, end, start);
+
+            for (int j = 0; j < numOfTeams; j++) {
+                if (fordFulkerson.inCut(j)) {
+                    list.add(teams[j]);
+                }
+            }
+            team.setIsEliminated(!list.isEmpty());
+            team.setCertificateOfElimination(list);
+        }
+
     }
 
     // number of teams
