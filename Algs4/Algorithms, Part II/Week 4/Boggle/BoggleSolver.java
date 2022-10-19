@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BoggleSolver {
-    private TST<Integer> dict;
+    private final TST<Integer> dict;
     private HashMap<Integer, Integer[]> verticesCells;
 
     // Initializes the data structure using the given array of strings as the dictionary.
