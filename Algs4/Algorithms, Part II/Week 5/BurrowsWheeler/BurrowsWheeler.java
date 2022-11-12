@@ -51,7 +51,7 @@ public class BurrowsWheeler {
             h[count[c]] = c;
             next[count[c]++] = i;
         }
-        // writing
+
         StringBuilder sb = new StringBuilder();
         while (0 < n--) {
             sb.append(h[first]);

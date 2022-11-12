@@ -1,23 +1,20 @@
 import edu.princeton.cs.algs4.BinaryStdIn;
 import edu.princeton.cs.algs4.BinaryStdOut;
 
-import java.util.List;
-import java.util.LinkedList;
-
 public class MoveToFront {
+    private static final int EXTENDED_ASCII = 256;
 
     // apply move-to-front encoding, reading from standard input and writing to standard output
     public static void encode() {
-        int r = 256;
-        char[] list = new char[r];
-        for (char i = 0; i < r; i++) {
+        char[] list = new char[EXTENDED_ASCII];
+        for (char i = 0; i < EXTENDED_ASCII; i++) {
             list[i] = i;
         }
 
         String s = BinaryStdIn.readString();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i), j = 0;
-            while (j < r && list[j] != c) {
+            while (j < EXTENDED_ASCII && list[j] != c) {
                 j++;
             }
             BinaryStdOut.write(j);
@@ -29,9 +26,8 @@ public class MoveToFront {
 
     // apply move-to-front decoding, reading from standard input and writing to standard output
     public static void decode() {
-        int r = 256;
-        char[] list = new char[r];
-        for (char i = 0; i < r; i++) {
+        char[] list = new char[EXTENDED_ASCII];
+        for (char i = 0; i < EXTENDED_ASCII; i++) {
             list[i] = i;
         }
 
